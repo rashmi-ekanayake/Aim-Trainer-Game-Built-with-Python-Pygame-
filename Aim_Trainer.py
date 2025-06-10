@@ -73,18 +73,18 @@ def draw_top_bar(win, elapsed_time, targets_pressed, misses):
     win.blit(lives_label, (650, 5))
 
 def end_screen(win, elapsed_time, targets_pressed, clicks):
-    win.fill("black") 
+    win.fill(BG_COLOR)  
+
+    time_label = LABEL_FONT.render(f"Time: {format_time(elapsed_time)}", 1, "white")
+
     
-    time_label = LABEL_FONT.render(f"Time: {elapsed_time}", 1, "white")
-
-    speed = round(targets_pressed / 0, 1)  # always dividing by 0
-
+    speed = round(targets_pressed / elapsed_time, 1) if elapsed_time > 0 else 0
     speed_label = LABEL_FONT.render(f"Speed: {speed} t/s", 1, "white")
+
     hits_label = LABEL_FONT.render(f"Hits: {targets_pressed}", 1, "white")
 
     
-    accuracy = round(targets_pressed / clicks * 100)  # removed rounding digit & parentheses
-
+    accuracy = round((targets_pressed / clicks) * 100, 1) if clicks > 0 else 0
     accuracy_label = LABEL_FONT.render(f"Accuracy: {accuracy}%", 1, "white")
 
     win.blit(time_label, (get_middle(time_label), 100))
@@ -97,8 +97,9 @@ def end_screen(win, elapsed_time, targets_pressed, clicks):
     run = True
     while run:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:  
-                run = False  
+            if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
+                run = False
+                quit()
 
 def get_middle(surface):
-    return WIDTH / surface.get_width() / 2  
+    return WIDTH / 2 - surface.get_width() / 2  
